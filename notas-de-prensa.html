@@ -1,0 +1,164 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notas de prensa — Per El Campello</title>
+  <meta name="description" content="Comunicados y notas de prensa del partido independiente Per El Campello." />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpeg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="campaign-banner hidden" id="campaignBanner">
+    <span data-i18n="campaign_notice">Este sitio es de carácter informativo. No contiene solicitudes de voto.</span>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.jpeg" alt="Logo Per El Campello" />
+        <div class="logo-text">
+          <span class="logo-name">Per El Campello</span>
+          <span class="logo-sub">Partido independiente</span>
+        </div>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+          <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+          <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+          <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+          <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+          <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="lang-selector" aria-label="Seleccionar idioma">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="val">VAL</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegación móvil">
+    <ul class="nav-list">
+      <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+      <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+      <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+      <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+      <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+    </ul>
+    <div class="lang-selector">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="val">VAL</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <h1 data-i18n="page_prensa">Notas de prensa</h1>
+        <p>Comunicados y noticias oficiales del partido</p>
+      </div>
+    </div>
+
+    <div class="blog-wrap">
+      {% assign prensa_posts = site.posts | where: "category", "prensa" %}
+      {% if prensa_posts.size == 0 %}
+        <div class="blog-empty">
+          <p data-i18n="prensa_empty">Próximamente se publicarán notas de prensa.</p>
+          <p data-i18n="prensa_soon">Vuelve pronto.</p>
+        </div>
+      {% else %}
+        <div class="post-list-full">
+          {% assign months_es = "ene,feb,mar,abr,may,jun,jul,ago,sep,oct,nov,dic" | split: "," %}
+          {% for post in prensa_posts %}
+            {% assign m = post.date | date: "%m" | plus: 0 | minus: 1 %}
+            <a href="{{ post.url | prepend: site.baseurl }}" class="post-row">
+              <div class="post-row-date">
+                <div class="post-row-day">{{ post.date | date: "%-d" }}</div>
+                <div class="post-row-month">{{ months_es[m] }}</div>
+              </div>
+              <div class="post-row-divider"></div>
+              <div class="post-row-content">
+                <div class="post-row-cat"><span class="post-cat">Notas de prensa</span></div>
+                <div class="post-row-title">{{ post.title }}</div>
+                <div class="post-row-excerpt">{{ post.excerpt | strip_html | truncatewords: 40 }}</div>
+                <div class="post-row-read">Leer más →</div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <img src="assets/logo.jpeg" alt="Per El Campello" class="footer-logo-img" />
+            <span class="footer-logo-name">Per El Campello</span>
+          </div>
+          <p>Partido político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello.</p>
+          <div class="footer-social-row">
+            <a href="https://www.facebook.com/perelcampello" class="footer-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/perelcampello" class="footer-social-link" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_nav">Navegación</h4>
+          <ul>
+            <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+            <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+            <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+            <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+            <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+            <li><a href="escritos.html" data-i18n="nav_escritos">Escritos</a></li>
+            <li><a href="notas-de-prensa.html" data-i18n="nav_prensa">Notas de prensa</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_contact">Contacto</h4>
+          <ul>
+            <li><a href="mailto:infoperelcampello@gmail.com">infoperelcampello@gmail.com</a></li>
+            <li><a href="tel:+34680151789">+34 680 15 17 89</a></li>
+            <li><a href="contacto.html" data-i18n="nav_contacto">Formulario de contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy" data-i18n="footer_copy">© 2026 Per El Campello. Todos los derechos reservados.</span>
+        <div class="footer-legal">
+          <a href="legal/privacidad.html" data-i18n="footer_privacy">Política de privacidad</a>
+          <a href="legal/cookies.html" data-i18n="footer_cookies">Política de cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <p data-i18n="cookie_text">Usamos cookies técnicas para mejorar tu experiencia.</p>
+    <div class="cookie-actions">
+      <button class="btn btn-primary btn-sm" id="cookieAccept" data-i18n="cookie_accept">Aceptar</button>
+      <button class="btn btn-ghost-light btn-sm" id="cookieDecline" data-i18n="cookie_decline">Rechazar</button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

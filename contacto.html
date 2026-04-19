@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacto — Per El Campello</title>
+  <meta name="description" content="Contacta con el partido independiente Per El Campello para consultas, colaboraciones o contacto de prensa." />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpeg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="campaign-banner hidden" id="campaignBanner">
+    <span data-i18n="campaign_notice">Este sitio es de carácter informativo. No contiene solicitudes de voto.</span>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.jpeg" alt="Logo Per El Campello" />
+        <div class="logo-text">
+          <span class="logo-name">Per El Campello</span>
+          <span class="logo-sub">Partido independiente</span>
+        </div>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+          <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+          <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+          <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+          <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+          <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="lang-selector" aria-label="Seleccionar idioma">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="val">VAL</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegación móvil">
+    <ul class="nav-list">
+      <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+      <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+      <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+      <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+      <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+    </ul>
+    <div class="lang-selector">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="val">VAL</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <h1 data-i18n="page_contacto">Contacto</h1>
+        <p data-i18n="contact_lead">Para consultas, colaboraciones o contacto con prensa.</p>
+      </div>
+    </div>
+
+    <div class="contact-wrap">
+
+      <!-- FORMULARIO -->
+      <div class="contact-form-section">
+        <h2 data-i18n="contact_title">Escríbenos</h2>
+        <p class="contact-lead" data-i18n="contact_lead">Para consultas, colaboraciones o contacto con prensa.</p>
+
+        <!-- Sustituir XXXXXXXX por el endpoint real de Formspree:
+             1. Crear cuenta gratuita en formspree.io
+             2. Crear nuevo formulario y copiar la URL
+             3. Pegar la URL en el atributo action -->
+        <form action="https://formspree.io/f/XXXXXXXX" method="POST" id="contactForm">
+
+          <div class="form-group">
+            <label class="form-label" for="nombre" data-i18n="contact_name">Nombre</label>
+            <input
+              class="form-control"
+              type="text"
+              id="nombre"
+              name="nombre"
+              required
+              data-i18n-placeholder="contact_name"
+              placeholder="Nombre"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email" data-i18n="contact_email">Correo electrónico</label>
+            <input
+              class="form-control"
+              type="email"
+              id="email"
+              name="email"
+              required
+              data-i18n-placeholder="contact_email"
+              placeholder="Correo electrónico"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="asunto" data-i18n="contact_subject">Asunto</label>
+            <select class="form-control" id="asunto" name="asunto" required>
+              <option value="" disabled selected>— Selecciona un asunto —</option>
+              <option value="consulta" data-i18n="contact_subject_general">Consulta general</option>
+              <option value="colaborar" data-i18n="contact_subject_collab">Quiero colaborar</option>
+              <option value="prensa" data-i18n="contact_subject_press">Prensa</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mensaje" data-i18n="contact_message">Mensaje</label>
+            <textarea
+              class="form-control"
+              id="mensaje"
+              name="mensaje"
+              required
+              data-i18n-placeholder="contact_message"
+              placeholder="Mensaje"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="privacidad" name="privacidad" required />
+              <label for="privacidad">
+                <span data-i18n="contact_privacy">Acepto la política de privacidad</span>
+                — <a href="legal/privacidad.html" target="_blank" data-i18n="footer_privacy">Política de privacidad</a>
+              </label>
+            </div>
+          </div>
+
+          <input type="text" name="_gotcha" style="display:none" />
+
+          <button type="submit" class="btn btn-primary" data-i18n="contact_send">Enviar mensaje</button>
+        </form>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="contact-sidebar">
+
+        <div class="contact-info-card">
+          <h3 data-i18n="contact_info_title">Contacto directo</h3>
+
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="info-label">Correo</div>
+              <div class="info-value"><a href="mailto:infoperelcampello@gmail.com">infoperelcampello@gmail.com</a></div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="info-label">Teléfono</div>
+              <div class="info-value"><a href="tel:+34680151789">+34 680 15 17 89</a></div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="info-label">Localización</div>
+              <div class="info-value">El Campello, Alicante</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-info-card">
+          <h3 data-i18n="contact_social_title">Redes sociales</h3>
+          <div class="social-row">
+            <a href="https://www.facebook.com/perelcampello" class="social-btn" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              Facebook
+            </a>
+            <a href="https://www.instagram.com/perelcampello" class="social-btn" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+              @perelcampello
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <img src="assets/logo.jpeg" alt="Per El Campello" class="footer-logo-img" />
+            <span class="footer-logo-name">Per El Campello</span>
+          </div>
+          <p>Partido político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello.</p>
+          <div class="footer-social-row">
+            <a href="https://www.facebook.com/perelcampello" class="footer-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/perelcampello" class="footer-social-link" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_nav">Navegación</h4>
+          <ul>
+            <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+            <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+            <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+            <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+            <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+            <li><a href="escritos.html" data-i18n="nav_escritos">Escritos</a></li>
+            <li><a href="notas-de-prensa.html" data-i18n="nav_prensa">Notas de prensa</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_contact">Contacto</h4>
+          <ul>
+            <li><a href="mailto:infoperelcampello@gmail.com">infoperelcampello@gmail.com</a></li>
+            <li><a href="tel:+34680151789">+34 680 15 17 89</a></li>
+            <li><a href="contacto.html" data-i18n="nav_contacto">Formulario de contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy" data-i18n="footer_copy">© 2026 Per El Campello. Todos los derechos reservados.</span>
+        <div class="footer-legal">
+          <a href="legal/privacidad.html" data-i18n="footer_privacy">Política de privacidad</a>
+          <a href="legal/cookies.html" data-i18n="footer_cookies">Política de cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <p data-i18n="cookie_text">Usamos cookies técnicas para mejorar tu experiencia.</p>
+    <div class="cookie-actions">
+      <button class="btn btn-primary btn-sm" id="cookieAccept" data-i18n="cookie_accept">Aceptar</button>
+      <button class="btn btn-ghost-light btn-sm" id="cookieDecline" data-i18n="cookie_decline">Rechazar</button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

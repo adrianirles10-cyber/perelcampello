@@ -1,0 +1,36 @@
+title: Per El Campello
+description: Partido político independiente para mejorar la vida en El Campello, Alicante
+baseurl: "/perelcampello"
+url: "https://adrianirles10-cyber.github.io"
+
+permalink: /posts/:slug.html
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# Categoría automática según subcarpeta de _posts/
+defaults:
+  - scope:
+      path: "_posts/escritos"
+      type: posts
+    values:
+      layout: post
+      category: escritos
+  - scope:
+      path: "_posts/prensa"
+      type: posts
+    values:
+      layout: post
+      category: prensa
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - "*.docx"
+  - "*.pdf"
+  - presentacion.html
+  - presentacion-pdf.html

@@ -1,0 +1,290 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Per El Campello — Política municipal participativa e independiente</title>
+  <meta name="description" content="Per El Campello es un proyecto político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello." />
+  <meta property="og:title" content="Per El Campello" />
+  <meta property="og:description" content="Política municipal participativa e independiente para El Campello." />
+  <meta property="og:image" content="assets/logo.jpeg" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpeg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- BANNER: quitar clase "hidden" en campaña electoral -->
+  <div class="campaign-banner hidden" id="campaignBanner">
+    <span data-i18n="campaign_notice">Este sitio es de carácter informativo. No contiene solicitudes de voto.</span>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="assets/logo.jpeg" alt="Logo Per El Campello" />
+        <div class="logo-text">
+          <span class="logo-name">Per El Campello</span>
+          <span class="logo-sub">Partido independiente</span>
+        </div>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+          <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+          <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+          <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+          <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+          <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="lang-selector" aria-label="Seleccionar idioma">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="val">VAL</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegación móvil">
+    <ul class="nav-list">
+      <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+      <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+      <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+      <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+      <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+      <li><a href="contacto.html" data-i18n="nav_contacto">Contacto</a></li>
+    </ul>
+    <div class="lang-selector">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="val">VAL</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-eyebrow" data-i18n="hero_eyebrow">Partido independiente · El Campello</div>
+        <img src="assets/logo.jpeg" alt="Per El Campello" class="hero-logo" />
+        <h1 class="hero-title">Per El Campello</h1>
+        <p class="hero-tagline" data-i18n="hero_tagline">Política municipal participativa e independiente</p>
+        <p class="hero-subtitle" data-i18n="hero_subtitle">Un proyecto ciudadano por y para El Campello</p>
+
+        <div class="concejal-badge">
+          <span class="concejal-dot"></span>
+          <span data-i18n="hero_concejal">2 concejales en activo desde las elecciones de 2023</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="blog.html" class="btn btn-primary" data-i18n="hero_cta_blog">Ver el blog</a>
+          <a href="quienes-somos.html" class="btn btn-ghost-light" data-i18n="hero_cta_who">Quiénes somos</a>
+        </div>
+
+        {% assign latest_post = site.posts.first %}
+        {% if latest_post %}
+        <a href="{{ latest_post.url | prepend: site.baseurl }}" class="hero-latest">
+          <div>
+            <div class="hero-latest-label" data-i18n="hero_latest_label">ÚLTIMO ESCRITO</div>
+            <div class="hero-latest-title">{{ latest_post.title }}</div>
+          </div>
+          <span class="hero-latest-arrow">→</span>
+        </a>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- SECCIONES -->
+    <section class="nav-sections">
+      <div class="nav-sections-inner">
+        <div class="nav-sections-header">
+          <h2 class="nav-sections-title" data-i18n="sections_title">Navega por el sitio</h2>
+        </div>
+        <div class="cards-grid">
+
+          <a href="quienes-somos.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_quienes_title">Quiénes somos</div>
+            <div class="card-desc" data-i18n="card_quienes_desc">Conoce al equipo y al concejal Paco Toni</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+          <a href="que-se-pretende.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_pretende_title">Qué se pretende</div>
+            <div class="card-desc" data-i18n="card_pretende_desc">Nuestra visión de otra forma de hacer política</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+          <a href="programa-electoral.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                <line x1="12" y1="11" x2="12" y2="17"/>
+                <line x1="9" y1="14" x2="15" y2="14"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_programa_title">Programa electoral</div>
+            <div class="card-desc" data-i18n="card_programa_desc">Las áreas de actuación para el municipio</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+          <a href="blog.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_blog_title">Blog</div>
+            <div class="card-desc" data-i18n="card_blog_desc">Escritos, reflexiones y noticias del partido</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+          <a href="escritos.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/>
+                <line x1="16" y1="8" x2="2" y2="22"/>
+                <line x1="17.5" y1="15" x2="9" y2="15"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_escritos_title">Escritos</div>
+            <div class="card-desc" data-i18n="card_escritos_desc">Artículos y reflexiones sobre El Campello</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+          <a href="notas-de-prensa.html" class="nav-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a4 4 0 0 1-4 4z"/>
+                <line x1="10" y1="7" x2="20" y2="7"/>
+                <line x1="10" y1="11" x2="20" y2="11"/>
+                <line x1="10" y1="15" x2="20" y2="15"/>
+              </svg>
+            </div>
+            <div class="card-title" data-i18n="card_prensa_title">Notas de prensa</div>
+            <div class="card-desc" data-i18n="card_prensa_desc">Comunicados y noticias oficiales</div>
+            <div class="card-link" data-i18n="card_read">Ver sección →</div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ÚLTIMAS ENTRADAS -->
+    <section class="latest-section">
+      <div class="latest-inner">
+        <div class="latest-header">
+          <h2 class="latest-title" data-i18n="latest_title">Últimas entradas</h2>
+          <a href="blog.html" class="btn btn-secondary btn-sm" data-i18n="latest_view_all">Ver todo →</a>
+        </div>
+        <div class="posts-grid">
+          {% assign months_es = "ene,feb,mar,abr,may,jun,jul,ago,sep,oct,nov,dic" | split: "," %}
+          {% for post in site.posts limit: 3 %}
+            {% assign m = post.date | date: "%m" | plus: 0 | minus: 1 %}
+            {% if post.category == "prensa" %}
+              {% assign cat_label = "Notas de prensa" %}
+            {% else %}
+              {% assign cat_label = "Escritos" %}
+            {% endif %}
+            <a href="{{ post.url | prepend: site.baseurl }}" class="post-card">
+              <div class="post-card-body">
+                <div class="post-card-meta">
+                  <span class="post-cat">{{ cat_label }}</span>
+                  <span>{{ post.date | date: "%-d" }} {{ months_es[m] }} {{ post.date | date: "%Y" }}</span>
+                </div>
+                <div class="post-card-title">{{ post.title }}</div>
+                <div class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</div>
+                <div class="post-card-read">Leer más →</div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <img src="assets/logo.jpeg" alt="Per El Campello" class="footer-logo-img" />
+            <span class="footer-logo-name">Per El Campello</span>
+          </div>
+          <p>Partido político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello.</p>
+          <div class="footer-social-row">
+            <a href="https://www.facebook.com/perelcampello" class="footer-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/perelcampello" class="footer-social-link" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_nav">Navegación</h4>
+          <ul>
+            <li><a href="index.html" data-i18n="nav_inicio">Inicio</a></li>
+            <li><a href="quienes-somos.html" data-i18n="nav_quienes">Quiénes somos</a></li>
+            <li><a href="que-se-pretende.html" data-i18n="nav_pretende">Qué se pretende</a></li>
+            <li><a href="programa-electoral.html" data-i18n="nav_programa">Programa electoral</a></li>
+            <li><a href="blog.html" data-i18n="nav_blog">Blog</a></li>
+            <li><a href="escritos.html" data-i18n="nav_escritos">Escritos</a></li>
+            <li><a href="notas-de-prensa.html" data-i18n="nav_prensa">Notas de prensa</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer_contact">Contacto</h4>
+          <ul>
+            <li><a href="mailto:infoperelcampello@gmail.com">infoperelcampello@gmail.com</a></li>
+            <li><a href="tel:+34680151789">+34 680 15 17 89</a></li>
+            <li><a href="contacto.html" data-i18n="nav_contacto">Formulario de contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy" data-i18n="footer_copy">© 2026 Per El Campello. Todos los derechos reservados.</span>
+        <div class="footer-legal">
+          <a href="legal/privacidad.html" data-i18n="footer_privacy">Política de privacidad</a>
+          <a href="legal/cookies.html" data-i18n="footer_cookies">Política de cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <p data-i18n="cookie_text">Usamos cookies técnicas para mejorar tu experiencia.</p>
+    <div class="cookie-actions">
+      <button class="btn btn-primary btn-sm" id="cookieAccept" data-i18n="cookie_accept">Aceptar</button>
+      <button class="btn btn-ghost-light btn-sm" id="cookieDecline" data-i18n="cookie_decline">Rechazar</button>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+# ============================================================
+# Decap CMS — Per El Campello
+# ============================================================
+#
+# ANTES DE PUBLICAR — hacer estos 3 pasos (~15 minutos):
+#
+# 1. Subir el sitio a GitHub y activar GitHub Pages:
+#    Settings → Pages → Source: main branch
+#
+# 2. Crear una OAuth App en GitHub:
+#    GitHub → Settings → Developer settings → OAuth Apps → New OAuth App
+#    - Application name: Per El Campello CMS
+#    - Homepage URL: https://TU_USUARIO.github.io/TU_REPO
+#    - Authorization callback URL: https://TU_USUARIO.github.io/TU_REPO/admin/
+#    - Copiar el "Client ID" que aparece tras crear la app
+#
+# 3. Reemplazar los dos placeholders marcados con <-- en este archivo
+#
+# PARA QUE PACO TONI PUEDA PUBLICAR:
+#    - Crear cuenta de GitHub para él (github.com → Sign up)
+#    - Invitarle como colaborador: Settings → Collaborators → Add people
+#    - Él va a: https://TU_DOMINIO/admin/ → "Login with GitHub" → listo
+# ============================================================
+
+# QUITAR ESTA LÍNEA antes de publicar (solo sirve para pruebas en local):
+# local_backend: true
+
+backend:
+  name: github
+  repo: adrianirles10-cyber/perelcampello
+  branch: main
+  auth_type: pkce
+  app_id: TU_OAUTH_APP_CLIENT_ID   # <-- Pegar el Client ID de la OAuth App
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+locale: "es"
+
+# ============================================================
+# COLECCIONES DE CONTENIDO
+# ============================================================
+
+collections:
+
+  # -- ESCRITOS -----------------------------------------------
+  - name: "escritos"
+    label: "Escritos"
+    label_singular: "Escrito"
+    description: "Artículos y reflexiones sobre El Campello"
+    folder: "_posts/escritos"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "posts/{{slug}}.html"
+    fields:
+      - label: "Título"
+        name: "title"
+        widget: "string"
+        hint: "El título del artículo"
+
+      - label: "Fecha de publicación"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "DD/MM/YYYY"
+        time_format: false
+        hint: "Cuándo se publica este artículo"
+
+      - label: "Autor"
+        name: "author"
+        widget: "string"
+        default: "Paco Toni"
+
+      - label: "Resumen breve"
+        name: "excerpt"
+        widget: "text"
+        hint: "Una o dos frases que aparecen en el listado del blog"
+
+      - label: "Contenido"
+        name: "body"
+        widget: "markdown"
+        hint: "El texto completo del artículo"
+
+      - label: "Imagen (opcional)"
+        name: "image"
+        widget: "image"
+        required: false
+        hint: "Foto o imagen para el artículo"
+
+  # -- NOTAS DE PRENSA -----------------------------------------
+  - name: "prensa"
+    label: "Notas de prensa"
+    label_singular: "Nota de prensa"
+    description: "Comunicados oficiales del partido"
+    folder: "_posts/prensa"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "posts/{{slug}}.html"
+    fields:
+      - label: "Título"
+        name: "title"
+        widget: "string"
+
+      - label: "Fecha"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "DD/MM/YYYY"
+        time_format: false
+
+      - label: "Resumen breve"
+        name: "excerpt"
+        widget: "text"
+        hint: "Una o dos frases que aparecen en el listado del blog"
+
+      - label: "Contenido"
+        name: "body"
+        widget: "markdown"
+
+      - label: "Imagen (opcional)"
+        name: "image"
+        widget: "image"
+        required: false
