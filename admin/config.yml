@@ -30,7 +30,7 @@ backend:
   repo: adrianirles10-cyber/perelcampello
   branch: main
   auth_type: pkce
-  app_id: TU_OAUTH_APP_CLIENT_ID   # <-- Pegar el Client ID de la OAuth App
+  app_id: Ov23liEFDa1gPw5fIkof
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
