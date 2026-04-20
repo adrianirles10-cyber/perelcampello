@@ -1,16 +1,39 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de administración — Per El Campello</title>
+  <title>Acceder — Per El Campello</title>
+  <link rel="icon" type="image/jpeg" href="../assets/logo.jpeg" />
+  <link rel="stylesheet" href="admin.css" />
 </head>
-<body>
-  <!-- Decap CMS (formerly Netlify CMS) - Panel de publicación -->
-  <!-- Para usar este panel necesitas:
-       1. Subir el sitio a GitHub Pages
-       2. Configurar una OAuth app de GitHub (ver admin/config.yml)
-       3. El padre accede a perelcampello.es/admin y se identifica con GitHub -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<body class="login-page">
+
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="../assets/logo.jpeg" alt="Per El Campello" />
+      <div>
+        <div class="login-brand">Per El Campello</div>
+        <div class="login-sub">Panel de publicación</div>
+      </div>
+    </div>
+
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" autocomplete="username" placeholder="Tu usuario" />
+      </div>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Tu contraseña" />
+      </div>
+      <div class="alert alert-error hidden" id="loginError">
+        Usuario o contraseña incorrectos
+      </div>
+      <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">Entrar</button>
+    </form>
+  </div>
+
+  <script src="admin.js"></script>
 </body>
 </html>
