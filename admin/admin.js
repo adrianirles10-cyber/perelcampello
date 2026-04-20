@@ -238,7 +238,7 @@ async function loadPostList(category) {
             <div class="post-item-meta">${displayDate} &nbsp;·&nbsp; ${f.name}</div>
           </div>
           <div>
-            <button class="btn-delete" onclick="deletePost('_posts/${category}/${f.name}', '${f.sha}', '${titlePart}', '${category}')">
+            <button class="btn-delete" onclick="deletePost('_posts/${category}/${f.name}', '${f.sha}', '${titlePart}', '${category}', this)">
               Eliminar
             </button>
           </div>
@@ -294,19 +294,31 @@ async function publishPost() {
 // ============================================================
 // Eliminar post
 // ============================================================
-async function deletePost(path, sha, title, category) {
+async function deletePost(path, sha, title, category, btn) {
   if (!confirm(`¿Eliminar "${title}"?\n\nEsta acción no se puede deshacer.`)) return;
 
+  // Remove from DOM immediately
+  const item = btn.closest('.post-item');
+  item.style.transition = 'opacity .2s';
+  item.style.opacity = '0';
+  setTimeout(() => item.remove(), 200);
+
   try {
-    // Refresh SHA before deleting to avoid stale-reference errors
     const filename = path.split('/').pop();
     const files = await GH.listFolder(`_posts/${category}`);
     const fresh = files.find(f => f.name === filename);
     const currentSha = fresh ? fresh.sha : sha;
 
     await GH.deleteFile(path, currentSha, `Eliminar post: ${title}`);
-    await loadPostList(category);
+
+    // If list is now empty show empty state
+    const container = document.getElementById(`list${category.charAt(0).toUpperCase() + category.slice(1)}`);
+    if (!container.querySelector('.post-item')) {
+      container.innerHTML = `<div class="empty-state"><strong>No hay entradas todavía</strong><p>Crea la primera usando el botón de arriba.</p></div>`;
+    }
   } catch (err) {
+    // Restore list on error
+    await loadPostList(category);
     alert(`Error al eliminar: ${err.message}`);
   }
 }
