@@ -50,18 +50,7 @@ const GH = {
   },
 
   async deleteFile(path, sha, message) {
-    const url = `https://api.github.com/repos/${CONFIG.github_repo}/contents/${path}`;
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `token ${CONFIG.github_token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message, sha, branch: CONFIG.github_branch })
-    });
-    if (!res.ok) throw new Error(`Error ${res.status}`);
-    return res.json();
+    return this.request('DELETE', path, { message, sha, branch: CONFIG.github_branch });
   }
 };
 
@@ -309,7 +298,13 @@ async function deletePost(path, sha, title, category) {
   if (!confirm(`¿Eliminar "${title}"?\n\nEsta acción no se puede deshacer.`)) return;
 
   try {
-    await GH.deleteFile(path, sha, `Eliminar post: ${title}`);
+    // Refresh SHA before deleting to avoid stale-reference errors
+    const filename = path.split('/').pop();
+    const files = await GH.listFolder(`_posts/${category}`);
+    const fresh = files.find(f => f.name === filename);
+    const currentSha = fresh ? fresh.sha : sha;
+
+    await GH.deleteFile(path, currentSha, `Eliminar post: ${title}`);
     await loadPostList(category);
   } catch (err) {
     alert(`Error al eliminar: ${err.message}`);
