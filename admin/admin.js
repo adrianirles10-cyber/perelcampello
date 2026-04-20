@@ -14,7 +14,8 @@ const CONFIG = {
 // ============================================================
 const GH = {
   async request(method, path, body = null) {
-    const url = `https://api.github.com/repos/${CONFIG.github_repo}/contents/${path}`;
+    const bust = method === 'GET' ? `?t=${Date.now()}` : '';
+    const url = `https://api.github.com/repos/${CONFIG.github_repo}/contents/${path}${bust}`;
     const opts = {
       method,
       headers: {
@@ -198,6 +199,7 @@ function showEditor(category) {
 
 function backToList() {
   showSection(currentCategory);
+  loadPostList(currentCategory);
 }
 
 function logout() {
