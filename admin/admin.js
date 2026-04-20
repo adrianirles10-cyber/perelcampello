@@ -52,12 +52,25 @@ const GH = {
 
   async deleteFile(path, sha, message) {
     return this.request('DELETE', path, { message, sha, branch: CONFIG.github_branch });
+  },
+
+  async uploadImage(path, base64, message) {
+    return this.request('PUT', path, { message, content: base64, branch: CONFIG.github_branch });
   }
 };
 
 // ============================================================
 // Utilidades
 // ============================================================
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 function slugify(text) {
   return text
     .toLowerCase()
@@ -154,6 +167,39 @@ if (document.getElementById('sectionEscritos')) {
 
   // Fecha por defecto: hoy
   document.getElementById('postDate').value = todayISO();
+
+  // Image upload
+  document.getElementById('imageInput').addEventListener('change', async function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    if (file.size > 700 * 1024) {
+      alert('La imagen pesa más de 700 KB. Comprimela antes de subirla.');
+      this.value = '';
+      return;
+    }
+
+    const btn = document.getElementById('btnInsertImage');
+    btn.textContent = 'Subiendo…';
+    btn.disabled = true;
+
+    try {
+      const base64 = await fileToBase64(file);
+      const ext = file.name.split('.').pop().toLowerCase();
+      const filename = `${Date.now()}.${ext}`;
+      const path = `assets/posts/${filename}`;
+
+      await GH.uploadImage(path, base64, `Imagen: ${filename}`);
+
+      mdeEditor.codemirror.replaceSelection(`\n![imagen](/${path})\n`);
+    } catch (err) {
+      alert(`Error al subir imagen: ${err.message}`);
+    } finally {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Insertar imagen';
+      btn.disabled = false;
+      this.value = '';
+    }
+  });
 
   // Submit del formulario
   document.getElementById('postForm').addEventListener('submit', async e => {
