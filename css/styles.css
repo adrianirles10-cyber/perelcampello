@@ -7,8 +7,8 @@
 :root {
   --orange:       #E8801A;
   --orange-dark:  #C96B0E;
-  --burgundy:     #8B2315;
-  --burgundy-dk:  #6B1A0E;
+  --burgundy:     #E8801A;
+  --burgundy-dk:  #C46510;
   --dark:         #150805;
   --ink:          #1A1A1A;
   --mid:          #4A4A4A;
@@ -247,7 +247,7 @@ main { flex: 1; }
    HERO — HOMEPAGE
    ============================================================ */
 .hero {
-  background: linear-gradient(140deg, var(--burgundy-dk) 0%, var(--burgundy) 40%, #A33018 100%);
+  background: linear-gradient(140deg, var(--burgundy-dk) 0%, var(--burgundy) 40%, #D07015 100%);
   color: var(--white);
   padding: 5rem 1.5rem 4.5rem;
   position: relative;
@@ -303,6 +303,16 @@ main { flex: 1; }
   opacity: .85;
   margin-bottom: .5rem;
   line-height: 1.55;
+}
+.hero-slogan {
+  font-family: var(--serif);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  font-style: italic;
+  font-weight: 500;
+  opacity: .95;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+  letter-spacing: .01em;
 }
 .hero-subtitle {
   font-size: .9rem;

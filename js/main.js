@@ -15,6 +15,7 @@ const translations = {
 
     hero_eyebrow:   'Partido independiente · El Campello',
     hero_tagline:   'Política municipal participativa e independiente',
+    hero_slogan:    '"Todos somos necesarios, todos valemos y todos aportamos"',
     hero_subtitle:  'Un proyecto ciudadano por y para El Campello',
     hero_concejal:  '2 concejales en activo desde las elecciones de 2023',
     hero_cta_blog:  'Ver el blog',
@@ -102,6 +103,7 @@ const translations = {
 
     hero_eyebrow:   'Partit independent · El Campello',
     hero_tagline:   'Política municipal participativa i independent',
+    hero_slogan:    '"Tots som necessaris, tots valem i tots aportem"',
     hero_subtitle:  "Un projecte ciutadà per i per a El Campello",
     hero_concejal:  '2 regidors en actiu des de les eleccions de 2023',
     hero_cta_blog:  'Veure el blog',
@@ -189,6 +191,7 @@ const translations = {
 
     hero_eyebrow:   'Independent party · El Campello',
     hero_tagline:   'Participatory and independent local politics',
+    hero_slogan:    '"We are all necessary, we all matter and we all contribute"',
     hero_subtitle:  "A citizens' project for El Campello",
     hero_concejal:  '2 active councillors since the 2023 elections',
     hero_cta_blog:  'Read the blog',
