@@ -56,12 +56,33 @@ const GH = {
 
   async uploadImage(path, base64, message) {
     return this.request('PUT', path, { message, content: base64, branch: CONFIG.github_branch });
+  },
+
+  async getFile(path) {
+    return this.request('GET', path);
   }
 };
 
 // ============================================================
 // Utilidades
 // ============================================================
+function decodeBase64(b64) {
+  return new TextDecoder().decode(
+    Uint8Array.from(atob(b64.replace(/\n/g, '')), c => c.charCodeAt(0))
+  );
+}
+
+function parseFrontmatter(raw) {
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!m) return { data: {}, body: raw.trim() };
+  const data = {};
+  m[1].split(/\r?\n/).forEach(line => {
+    const kv = line.match(/^(\w+):\s*"?(.*?)"?\s*$/);
+    if (kv) data[kv[1]] = kv[2].replace(/\\"/g, '"');
+  });
+  return { data, body: m[2].trim() };
+}
+
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -139,6 +160,8 @@ if (loginForm) {
 // ============================================================
 let currentCategory = 'escritos';
 let mdeEditor = null;
+let currentEditSha = null;
+let currentEditPath = null;
 
 if (document.getElementById('sectionEscritos')) {
   // Verificar autenticación
@@ -224,6 +247,9 @@ function showSection(category) {
 
 function showEditor(category) {
   currentCategory = category;
+  currentEditSha = null;
+  currentEditPath = null;
+
   const label = category === 'prensa' ? 'Nueva nota de prensa' : 'Nuevo escrito';
   document.getElementById('editorTitle').textContent = label;
 
@@ -231,7 +257,6 @@ function showEditor(category) {
   document.getElementById('sectionPrensa').classList.add('hidden');
   document.getElementById('sectionEditor').classList.remove('hidden');
 
-  // Limpiar formulario
   document.getElementById('postTitle').value = '';
   document.getElementById('postDate').value = todayISO();
   document.getElementById('postAuthor').value = 'Paco Toni';
@@ -285,7 +310,10 @@ async function loadPostList(category) {
             <div class="post-item-title">${titlePart}</div>
             <div class="post-item-meta">${displayDate} &nbsp;·&nbsp; ${f.name}</div>
           </div>
-          <div>
+          <div class="post-item-actions">
+            <button class="btn-edit" onclick="editPost('_posts/${category}/${f.name}', '${category}')">
+              Editar
+            </button>
             <button class="btn-delete" onclick="deletePost('_posts/${category}/${f.name}', '${f.sha}', '${titlePart}', '${category}', this)">
               Eliminar
             </button>
@@ -313,23 +341,48 @@ async function publishPost() {
     return;
   }
 
-  const slug     = slugify(title);
-  const filename = `${date}-${slug}.md`;
-  const path     = `_posts/${currentCategory}/${filename}`;
   const content  = buildFrontmatter({ title, date, author, excerpt, body });
   const category = currentCategory;
+  const btn = document.getElementById('btnPublish');
 
-  // Add to list immediately and go back
-  addOptimisticPost(title, date, filename, category);
-  showSection(category);
+  if (currentEditSha) {
+    // ── EDIT MODE ──
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+    setStatus('', '');
+    try {
+      const encoded = btoa(unescape(encodeURIComponent(content)));
+      await GH.request('PUT', currentEditPath, {
+        message: `Actualizar post: ${title}`,
+        content: encoded,
+        sha: currentEditSha,
+        branch: CONFIG.github_branch
+      });
+      setStatus('¡Guardado correctamente!', 'success');
+      btn.textContent = 'Guardado ✓';
+      setTimeout(() => backToList(), 1400);
+    } catch (err) {
+      setStatus(`Error al guardar: ${err.message}`, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Guardar cambios';
+    }
+  } else {
+    // ── CREATE MODE ──
+    const slug     = slugify(title);
+    const filename = `${date}-${slug}.md`;
+    const path     = `_posts/${category}/${filename}`;
 
-  try {
-    await GH.createFile(path, content, `Nuevo post: ${title}`);
-    await loadPostList(category);
-  } catch (err) {
-    removeOptimisticPost(filename, category);
-    showEditor(category);
-    setStatus(`Error al publicar: ${err.message}`, 'error');
+    addOptimisticPost(title, date, filename, category);
+    showSection(category);
+
+    try {
+      await GH.createFile(path, content, `Nuevo post: ${title}`);
+      await loadPostList(category);
+    } catch (err) {
+      removeOptimisticPost(filename, category);
+      showEditor(category);
+      setStatus(`Error al publicar: ${err.message}`, 'error');
+    }
   }
 }
 
@@ -385,6 +438,38 @@ async function deletePost(path, sha, title, category, btn) {
     // Restore list on error
     await loadPostList(category);
     alert(`Error al eliminar: ${err.message}`);
+  }
+}
+
+// ============================================================
+// Editar post
+// ============================================================
+async function editPost(path, category) {
+  showEditor(category);
+  document.getElementById('editorTitle').textContent = 'Editar entrada';
+  document.getElementById('btnPublish').textContent = 'Guardar cambios';
+  document.getElementById('btnPublish').disabled = true;
+  setStatus('Cargando contenido…', '');
+
+  try {
+    const file = await GH.getFile(path);
+    const raw  = decodeBase64(file.content);
+    const { data, body } = parseFrontmatter(raw);
+
+    document.getElementById('postTitle').value   = data.title   || '';
+    document.getElementById('postDate').value    = data.date    || todayISO();
+    document.getElementById('postAuthor').value  = data.author  || 'Paco Toni';
+    document.getElementById('postExcerpt').value = data.excerpt || '';
+    mdeEditor.value(body);
+
+    currentEditSha  = file.sha;
+    currentEditPath = path;
+
+    setStatus('', '');
+    document.getElementById('btnPublish').disabled = false;
+  } catch (err) {
+    setStatus(`Error al cargar: ${err.message}`, 'error');
+    backToList();
   }
 }
 
