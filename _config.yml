@@ -1,7 +1,7 @@
 title: Per El Campello
 description: Partido político independiente para mejorar la vida en El Campello, Alicante
-baseurl: "/perelcampello"
-url: "https://adrianirles10-cyber.github.io"
+baseurl: ""
+url: "https://perelcampello.es"
 
 permalink: /posts/:slug.html
 
