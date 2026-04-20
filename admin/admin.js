@@ -265,30 +265,47 @@ async function publishPost() {
     return;
   }
 
-  const btn = document.getElementById('btnPublish');
-  btn.disabled = true;
-  btn.textContent = 'Publicando...';
-  setStatus('', '');
+  const slug     = slugify(title);
+  const filename = `${date}-${slug}.md`;
+  const path     = `_posts/${currentCategory}/${filename}`;
+  const content  = buildFrontmatter({ title, date, author, excerpt, body });
+  const category = currentCategory;
+
+  // Add to list immediately and go back
+  addOptimisticPost(title, date, filename, category);
+  showSection(category);
 
   try {
-    const slug     = slugify(title);
-    const filename = `${date}-${slug}.md`;
-    const path     = `_posts/${currentCategory}/${filename}`;
-    const content  = buildFrontmatter({ title, date, author, excerpt, body });
-
     await GH.createFile(path, content, `Nuevo post: ${title}`);
-
-    setStatus('¡Publicado correctamente! Aparecerá en el sitio en ~1 minuto.', 'success');
-    btn.textContent = 'Publicado ✓';
-
-    // Recargar lista
-    await loadPostList(currentCategory);
-
+    await loadPostList(category);
   } catch (err) {
+    removeOptimisticPost(filename, category);
+    showEditor(category);
     setStatus(`Error al publicar: ${err.message}`, 'error');
-    btn.disabled = false;
-    btn.textContent = 'Publicar';
   }
+}
+
+function addOptimisticPost(title, date, filename, category) {
+  const container = document.getElementById(`list${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  container.querySelector('.empty-state')?.remove();
+
+  const item = document.createElement('div');
+  item.className = 'post-item';
+  item.dataset.pending = filename;
+  item.style.opacity = '0';
+  item.innerHTML = `
+    <div class="post-item-info">
+      <div class="post-item-title">${title}</div>
+      <div class="post-item-meta">${formatDate(date)} &nbsp;·&nbsp; ${filename} &nbsp;<span style="color:var(--orange);font-weight:600">publicando…</span></div>
+    </div>
+    <div><button class="btn-delete" disabled style="opacity:.4">Eliminar</button></div>`;
+  container.prepend(item);
+  requestAnimationFrame(() => { item.style.transition = 'opacity .25s'; item.style.opacity = '1'; });
+}
+
+function removeOptimisticPost(filename, category) {
+  const container = document.getElementById(`list${category.charAt(0).toUpperCase() + category.slice(1)}`);
+  container.querySelector(`[data-pending="${filename}"]`)?.remove();
 }
 
 // ============================================================
