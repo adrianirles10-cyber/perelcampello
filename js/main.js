@@ -89,6 +89,9 @@ const translations = {
 
     prensa_empty: 'Próximamente se publicarán notas de prensa.',
     prensa_soon:  'Vuelve pronto.',
+
+    logo_sub:     'Partido independiente',
+    footer_brand: 'Partido político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello.',
   },
 
   val: {
@@ -177,6 +180,9 @@ const translations = {
 
     prensa_empty: 'Pròximament es publicaran notes de premsa.',
     prensa_soon:  'Torna prompte.',
+
+    logo_sub:     'Partit independent',
+    footer_brand: 'Partit polític independent nascut per millorar la qualitat de vida de qui viu a El Campello.',
   },
 
   en: {
@@ -265,8 +271,31 @@ const translations = {
 
     prensa_empty: 'Press releases will be published soon.',
     prensa_soon:  'Come back soon.',
+
+    logo_sub:     'Independent party',
+    footer_brand: 'Independent political party born to improve the quality of life of those who live in El Campello.',
   }
 };
+
+/* ── Month names for date formatting ───────────────────────── */
+const MONTHS = {
+  es:  ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],
+  val: ['gener','febrer','març','abril','maig','juny','juliol','agost','setembre','octubre','novembre','desembre'],
+  en:  ['January','February','March','April','May','June','July','August','September','October','November','December']
+};
+
+function formatPostDate(dateStr, lang) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const month = MONTHS[lang][d.getMonth()];
+  const day   = d.getDate();
+  const year  = d.getFullYear();
+  if (lang === 'en')  return `${month} ${day}, ${year}`;
+  if (lang === 'val') {
+    const prep = ['abril','agost','octubre'].includes(month) ? "d'" : 'de ';
+    return `${day} ${prep}${month} de ${year}`;
+  }
+  return `${day} de ${month} de ${year}`;
+}
 
 /* ── Language ──────────────────────────────────────────────── */
 function getLang() {
@@ -296,6 +325,15 @@ function applyLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
+
+  // Format dates rendered by Jekyll
+  document.querySelectorAll('[data-date]').forEach(el => {
+    el.textContent = formatPostDate(el.dataset.date, lang);
+  });
+
+  // Update hardcoded elements by class
+  if (t.logo_sub)     document.querySelectorAll('.logo-sub').forEach(el => el.textContent = t.logo_sub);
+  if (t.footer_brand) document.querySelectorAll('.footer-brand > p').forEach(el => el.textContent = t.footer_brand);
 
   document.documentElement.lang = lang === 'val' ? 'ca' : lang;
 }

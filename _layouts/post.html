@@ -64,13 +64,11 @@
     <div class="post-single">
       <div class="post-single-meta">
         {% if page.category == 'prensa' %}
-          <span class="post-cat">Notas de prensa</span>
+          <span class="post-cat" data-i18n="page_prensa">Notas de prensa</span>
         {% else %}
-          <span class="post-cat">Escritos</span>
+          <span class="post-cat" data-i18n="page_escritos">Escritos</span>
         {% endif %}
-        {% assign month_idx = page.date | date: "%m" | plus: 0 | minus: 1 %}
-        {% assign months_es = "enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre" | split: "," %}
-        <span>{{ page.date | date: "%-d" }} de {{ months_es[month_idx] }} de {{ page.date | date: "%Y" }}</span>
+        <span data-date="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%-d de %B de %Y" }}</span>
         <span>·</span>
         <span>{{ page.author | default: "Per El Campello" }}</span>
       </div>
