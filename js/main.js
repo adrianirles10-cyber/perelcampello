@@ -328,6 +328,14 @@ function triggerGTCombo(tl, attempts) {
   }
 }
 
+function hideGTBar() {
+  document.querySelectorAll(
+    '.goog-te-banner-frame, iframe.goog-te-banner-frame, body > .skiptranslate, .goog-te-gadget'
+  ).forEach(el => { el.style.setProperty('display', 'none', 'important'); });
+  document.body.style.setProperty('top', '0', 'important');
+  document.body.style.setProperty('margin-top', '0', 'important');
+}
+
 function initGoogleTranslate() {
   const lang = getLang();
   const tl   = lang === 'val' ? 'ca' : lang === 'en' ? 'en' : null;
@@ -344,7 +352,12 @@ function initGoogleTranslate() {
       autoDisplay: false
     }, 'google_translate_element');
     if (tl) triggerGTCombo(tl);
+    hideGTBar();
   };
+
+  // Watch for GT injecting its bar into the DOM
+  const obs = new MutationObserver(hideGTBar);
+  obs.observe(document.body, { childList: true, subtree: false });
 
   const s = document.createElement('script');
   s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';

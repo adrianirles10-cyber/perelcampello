@@ -1069,11 +1069,15 @@ textarea.form-control { resize: vertical; min-height: 130px; }
   .post-row-day { font-size: 1.1rem; }
 }
 
-/* ── Google Translate: hide toolbar ───────────────────────── */
+/* ── Google Translate: ocultar TODA la barra ──────────────── */
 .goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate { display: none !important; }
-body { top: 0 !important; }
-.goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-#goog-gt-tt,
-.goog-te-balloon-frame,
-.goog-te-menu-frame { display: none !important; }
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame { display: none !important; visibility: hidden !important; }
+body > .skiptranslate { display: none !important; }
+.goog-te-gadget, .goog-te-gadget-simple { display: none !important; }
+.goog-te-menu-frame, .goog-te-balloon-frame { display: none !important; }
+#goog-gt-tt, .goog-tooltip { display: none !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }
+/* Evitar que GT desplace el body hacia abajo */
+body { top: 0 !important; margin-top: 0 !important; }
+html body { top: 0px !important; }
