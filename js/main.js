@@ -293,89 +293,47 @@ const MONTHS = {
   en:  ['January','February','March','April','May','June','July','August','September','October','November','December']
 };
 
-/* ── Google Translate widget ───────────────────────────────── */
-function getGTCookieLang() {
-  const c = document.cookie.split(';').find(s => s.trim().startsWith('googtrans='));
-  if (!c) return 'es';
-  const v = decodeURIComponent(c.trim().slice('googtrans='.length));
-  if (v === '/es/ca') return 'val';
-  if (v === '/es/en') return 'en';
-  return 'es';
+/* ── Traducción automática via API ─────────────────────────── */
+async function gtAPI(text, tl) {
+  if (!text.trim()) return text;
+  try {
+    const r = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`
+    );
+    const d = await r.json();
+    return d[0].map(c => c[0]).join('');
+  } catch { return text; }
 }
 
-function setGTCookie(lang) {
-  const tl = lang === 'val' ? 'ca' : lang === 'en' ? 'en' : null;
-  if (!tl) {
-    const exp = '; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-    document.cookie = 'googtrans=' + exp;
-    document.cookie = 'googtrans=' + exp + '; domain=' + location.hostname;
-  } else {
-    const val = '/es/' + tl;
-    document.cookie = 'googtrans=' + val + '; path=/';
-    document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
+async function translatePageContent(lang) {
+  const tl       = lang === 'val' ? 'ca' : 'en';
+  const cacheKey = `pec_tr|${tl}|${location.pathname}`;
+  const main     = document.querySelector('main');
+  if (!main) return;
+
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) { main.innerHTML = cached; initFilterTabs(); return; }
+
+  // Elementos de contenido (excluye los ya gestionados por data-i18n)
+  const SELECTOR = [
+    'h1:not([data-i18n])', 'h2:not([data-i18n])',
+    'h3:not([data-i18n])', 'h4:not([data-i18n])',
+    'p:not([data-i18n])',  'li:not([data-i18n])', 'blockquote',
+    '.post-row-title', '.post-row-excerpt', '.post-row-read',
+    '.candidate-name', '.candidate-role', '.candidate-status'
+  ].join(',');
+
+  const els = [...main.querySelectorAll(SELECTOR)]
+    .filter(el => el.textContent.trim());
+
+  const BATCH = 8;
+  for (let i = 0; i < els.length; i += BATCH) {
+    const batch = els.slice(i, i + BATCH);
+    const txts  = await Promise.all(batch.map(el => gtAPI(el.textContent.trim(), tl)));
+    batch.forEach((el, j) => { if (txts[j]) el.textContent = txts[j]; });
   }
-}
 
-function triggerGTCombo(tl, attempts) {
-  const sel = document.querySelector('.goog-te-combo');
-  if (sel) {
-    if (sel.value !== tl) {
-      sel.value = tl;
-      sel.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-  } else if ((attempts || 0) < 25) {
-    setTimeout(() => triggerGTCombo(tl, (attempts || 0) + 1), 200);
-  }
-}
-
-function hideGTBar() {
-  // Oculta cualquier iframe inyectado por GT en el body
-  document.querySelectorAll('body > iframe').forEach(el => {
-    el.style.setProperty('display', 'none', 'important');
-    el.style.setProperty('height', '0', 'important');
-  });
-  // Oculta el gadget contenedor
-  document.querySelectorAll('.goog-te-banner-frame, .goog-te-gadget').forEach(el => {
-    el.style.setProperty('display', 'none', 'important');
-  });
-  // Resetea top si GT lo desplazó
-  const bodyTop = window.getComputedStyle(document.body).top;
-  if (bodyTop && bodyTop !== '0px' && bodyTop !== 'auto') {
-    document.body.style.setProperty('top', '0', 'important');
-  }
-}
-
-function initGoogleTranslate() {
-  const lang = getLang();
-  const tl   = lang === 'val' ? 'ca' : lang === 'en' ? 'en' : null;
-
-  const div = document.createElement('div');
-  div.id = 'google_translate_element';
-  div.style.cssText = 'display:none;position:absolute;top:-9999px;left:-9999px;';
-  document.body.appendChild(div);
-
-  window.googleTranslateElementInit = function () {
-    new google.translate.TranslateElement({
-      pageLanguage: 'es',
-      includedLanguages: 'ca,en',
-      autoDisplay: false
-    }, 'google_translate_element');
-    if (tl) triggerGTCombo(tl);
-  };
-
-  // Observa cambios en hijos del body Y en el atributo style del body
-  const obs = new MutationObserver(hideGTBar);
-  obs.observe(document.body, {
-    childList: true,
-    subtree: false,
-    attributes: true,
-    attributeFilter: ['style']
-  });
-
-  const s = document.createElement('script');
-  s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-  s.async = true;
-  document.head.appendChild(s);
+  sessionStorage.setItem(cacheKey, main.innerHTML);
 }
 
 function formatPostDate(dateStr, lang) {
@@ -393,7 +351,7 @@ function formatPostDate(dateStr, lang) {
 
 /* ── Language ──────────────────────────────────────────────── */
 function getLang() {
-  return localStorage.getItem('pec_lang') || getGTCookieLang();
+  return localStorage.getItem('pec_lang') || 'es';
 }
 
 function applyLang(lang) {
@@ -401,30 +359,25 @@ function applyLang(lang) {
   if (!t) return;
   localStorage.setItem('pec_lang', lang);
 
+  // UI: nav, botones, badges — todos los idiomas
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
 
   document.documentElement.lang = lang === 'val' ? 'ca' : lang;
-
-  // For Spanish: apply data-i18n manually (no GT active)
-  // For VAL/EN: Google Translate handles all text — skip data-i18n to avoid conflict
-  if (lang !== 'es') return;
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key] !== undefined) el.textContent = t[key];
-  });
-
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (t[key] !== undefined) el.placeholder = t[key];
-  });
-
-  document.querySelectorAll('[data-i18n-html]').forEach(el => {
-    const key = el.getAttribute('data-i18n-html');
-    if (t[key] !== undefined) el.innerHTML = t[key];
-  });
 
   document.querySelectorAll('[data-date]').forEach(el => {
     el.textContent = formatPostDate(el.dataset.date, lang);
@@ -432,6 +385,9 @@ function applyLang(lang) {
 
   if (t.logo_sub)     document.querySelectorAll('.logo-sub').forEach(el => el.textContent = t.logo_sub);
   if (t.footer_brand) document.querySelectorAll('.footer-brand > p').forEach(el => el.textContent = t.footer_brand);
+
+  // Contenido de página (párrafos, posts, etc.) — traducido via API
+  if (lang !== 'es') translatePageContent(lang);
 }
 
 /* ── Mobile menu ───────────────────────────────────────────── */
@@ -502,9 +458,7 @@ function initFilterTabs() {
 
 /* ── Init ──────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  const _lang = getLang();
-  applyLang(_lang);
-  if (_lang !== 'es') initGoogleTranslate();
+  applyLang(getLang());
   initMobileMenu();
   initCookieBanner();
   setActiveNav();
@@ -513,8 +467,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const newLang = btn.dataset.lang;
+      if (newLang === getLang()) return;
       localStorage.setItem('pec_lang', newLang);
-      setGTCookie(newLang);
       location.reload();
     });
   });
