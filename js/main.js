@@ -293,68 +293,47 @@ const MONTHS = {
   en:  ['January','February','March','April','May','June','July','August','September','October','November','December']
 };
 
-/* ── In-page translation via Google ───────────────────────── */
-let _origBody  = null;
-let _origTitle = null;
-
-async function gTranslate(text, tl) {
-  if (!text.trim()) return text;
-  const res = await fetch(
-    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`
-  );
-  const data = await res.json();
-  return data[0].map(c => c[0]).join('');
+/* ── Google Translate widget ───────────────────────────────── */
+function getGTCookieLang() {
+  const c = document.cookie.split(';').find(s => s.trim().startsWith('googtrans='));
+  if (!c) return 'es';
+  const v = decodeURIComponent(c.trim().slice('googtrans='.length));
+  if (v === '/es/ca') return 'val';
+  if (v === '/es/en') return 'en';
+  return 'es';
 }
 
-async function translatePostContent(lang) {
-  const body  = document.querySelector('.post-body');
-  const title = document.querySelector('.post-single h1');
-  const bar   = document.getElementById('postTranslate');
-  const status = document.getElementById('translateStatus');
-  if (!body) return;
-
-  if (!_origBody) {
-    _origBody  = body.innerHTML;
-    _origTitle = title ? title.textContent : null;
+function setGTCookie(lang) {
+  const tl = lang === 'val' ? 'ca' : lang === 'en' ? 'en' : null;
+  if (!tl) {
+    const exp = '; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    document.cookie = 'googtrans=' + exp;
+    document.cookie = 'googtrans=' + exp + '; domain=' + location.hostname;
+  } else {
+    const val = '/es/' + tl;
+    document.cookie = 'googtrans=' + val + '; path=/';
+    document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
   }
+}
 
-  if (lang === 'es') {
-    body.innerHTML = _origBody;
-    if (title && _origTitle) title.textContent = _origTitle;
-    if (bar) bar.classList.add('hidden');
-    return;
-  }
+function initGoogleTranslate() {
+  const div = document.createElement('div');
+  div.id = 'google_translate_element';
+  div.style.cssText = 'display:none;position:absolute;top:-9999px;';
+  document.body.appendChild(div);
 
-  const tl  = lang === 'en' ? 'en' : 'ca';
-  const key = `tr|${tl}|${location.pathname}`;
-  const hit = sessionStorage.getItem(key);
-  if (hit) {
-    const c = JSON.parse(hit);
-    body.innerHTML = c.b;
-    if (title && c.t) title.textContent = c.t;
-    if (bar) bar.classList.add('hidden');
-    return;
-  }
+  window.googleTranslateElementInit = function () {
+    new google.translate.TranslateElement({
+      pageLanguage: 'es',
+      includedLanguages: 'ca,en',
+      autoDisplay: false
+    }, 'google_translate_element');
+  };
 
-  if (bar) {
-    bar.classList.remove('hidden');
-    if (status) status.textContent = lang === 'en' ? 'Translating…' : 'Traduint…';
-  }
-  body.style.opacity = '0.35';
-
-  try {
-    const els  = [...body.querySelectorAll('p,h2,h3,h4,li,blockquote')]
-                   .filter(e => !e.querySelector('img') && e.textContent.trim());
-    const txts = await Promise.all(els.map(e => gTranslate(e.textContent, tl)));
-    els.forEach((e, i) => { e.textContent = txts[i]; });
-    const tt = title ? await gTranslate(title.textContent, tl) : null;
-    if (title && tt) title.textContent = tt;
-    sessionStorage.setItem(key, JSON.stringify({ b: body.innerHTML, t: tt }));
-    if (bar) bar.classList.add('hidden');
-  } catch {
-    if (bar) bar.classList.add('hidden');
-  }
-  body.style.opacity = '1';
+  const s = document.createElement('script');
+  s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+  s.async = true;
+  document.head.appendChild(s);
 }
 
 function formatPostDate(dateStr, lang) {
@@ -372,13 +351,23 @@ function formatPostDate(dateStr, lang) {
 
 /* ── Language ──────────────────────────────────────────────── */
 function getLang() {
-  return localStorage.getItem('pec_lang') || 'es';
+  return localStorage.getItem('pec_lang') || getGTCookieLang();
 }
 
 function applyLang(lang) {
   const t = translations[lang];
   if (!t) return;
   localStorage.setItem('pec_lang', lang);
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+
+  document.documentElement.lang = lang === 'val' ? 'ca' : lang;
+
+  // For Spanish: apply data-i18n manually (no GT active)
+  // For VAL/EN: Google Translate handles all text — skip data-i18n to avoid conflict
+  if (lang !== 'es') return;
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -395,23 +384,12 @@ function applyLang(lang) {
     if (t[key] !== undefined) el.innerHTML = t[key];
   });
 
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
-  });
-
-  // In-page translation on post pages
-  translatePostContent(lang);
-
-  // Format dates rendered by Jekyll
   document.querySelectorAll('[data-date]').forEach(el => {
     el.textContent = formatPostDate(el.dataset.date, lang);
   });
 
-  // Update hardcoded elements by class
   if (t.logo_sub)     document.querySelectorAll('.logo-sub').forEach(el => el.textContent = t.logo_sub);
   if (t.footer_brand) document.querySelectorAll('.footer-brand > p').forEach(el => el.textContent = t.footer_brand);
-
-  document.documentElement.lang = lang === 'val' ? 'ca' : lang;
 }
 
 /* ── Mobile menu ───────────────────────────────────────────── */
@@ -483,12 +461,18 @@ function initFilterTabs() {
 /* ── Init ──────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   applyLang(getLang());
+  initGoogleTranslate();
   initMobileMenu();
   initCookieBanner();
   setActiveNav();
   initFilterTabs();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      localStorage.setItem('pec_lang', newLang);
+      setGTCookie(newLang);
+      location.reload();
+    });
   });
 });

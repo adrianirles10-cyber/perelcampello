@@ -1068,3 +1068,12 @@ textarea.form-control { resize: vertical; min-height: 130px; }
   .post-row-date { display: flex; gap: .35rem; align-items: baseline; }
   .post-row-day { font-size: 1.1rem; }
 }
+
+/* ── Google Translate: hide toolbar ───────────────────────── */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+body { top: 0 !important; }
+.goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-menu-frame { display: none !important; }
