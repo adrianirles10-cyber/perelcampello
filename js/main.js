@@ -329,11 +329,20 @@ function triggerGTCombo(tl, attempts) {
 }
 
 function hideGTBar() {
-  document.querySelectorAll(
-    '.goog-te-banner-frame, iframe.goog-te-banner-frame, body > .skiptranslate, .goog-te-gadget'
-  ).forEach(el => { el.style.setProperty('display', 'none', 'important'); });
-  document.body.style.setProperty('top', '0', 'important');
-  document.body.style.setProperty('margin-top', '0', 'important');
+  // Oculta cualquier iframe inyectado por GT en el body
+  document.querySelectorAll('body > iframe').forEach(el => {
+    el.style.setProperty('display', 'none', 'important');
+    el.style.setProperty('height', '0', 'important');
+  });
+  // Oculta el gadget contenedor
+  document.querySelectorAll('.goog-te-banner-frame, .goog-te-gadget').forEach(el => {
+    el.style.setProperty('display', 'none', 'important');
+  });
+  // Resetea top si GT lo desplazó
+  const bodyTop = window.getComputedStyle(document.body).top;
+  if (bodyTop && bodyTop !== '0px' && bodyTop !== 'auto') {
+    document.body.style.setProperty('top', '0', 'important');
+  }
 }
 
 function initGoogleTranslate() {
@@ -352,12 +361,16 @@ function initGoogleTranslate() {
       autoDisplay: false
     }, 'google_translate_element');
     if (tl) triggerGTCombo(tl);
-    hideGTBar();
   };
 
-  // Watch for GT injecting its bar into the DOM
+  // Observa cambios en hijos del body Y en el atributo style del body
   const obs = new MutationObserver(hideGTBar);
-  obs.observe(document.body, { childList: true, subtree: false });
+  obs.observe(document.body, {
+    childList: true,
+    subtree: false,
+    attributes: true,
+    attributeFilter: ['style']
+  });
 
   const s = document.createElement('script');
   s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
