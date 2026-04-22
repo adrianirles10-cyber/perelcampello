@@ -316,10 +316,25 @@ function setGTCookie(lang) {
   }
 }
 
+function triggerGTCombo(tl, attempts) {
+  const sel = document.querySelector('.goog-te-combo');
+  if (sel) {
+    if (sel.value !== tl) {
+      sel.value = tl;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  } else if ((attempts || 0) < 25) {
+    setTimeout(() => triggerGTCombo(tl, (attempts || 0) + 1), 200);
+  }
+}
+
 function initGoogleTranslate() {
+  const lang = getLang();
+  const tl   = lang === 'val' ? 'ca' : lang === 'en' ? 'en' : null;
+
   const div = document.createElement('div');
   div.id = 'google_translate_element';
-  div.style.cssText = 'display:none;position:absolute;top:-9999px;';
+  div.style.cssText = 'display:none;position:absolute;top:-9999px;left:-9999px;';
   document.body.appendChild(div);
 
   window.googleTranslateElementInit = function () {
@@ -328,6 +343,7 @@ function initGoogleTranslate() {
       includedLanguages: 'ca,en',
       autoDisplay: false
     }, 'google_translate_element');
+    if (tl) triggerGTCombo(tl);
   };
 
   const s = document.createElement('script');
@@ -460,8 +476,9 @@ function initFilterTabs() {
 
 /* ── Init ──────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  applyLang(getLang());
-  initGoogleTranslate();
+  const _lang = getLang();
+  applyLang(_lang);
+  if (_lang !== 'es') initGoogleTranslate();
   initMobileMenu();
   initCookieBanner();
   setActiveNav();
