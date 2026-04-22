@@ -717,17 +717,15 @@ main { flex: 1; }
 .post-translate {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: .6rem;
   background: #FFF7ED;
   border: 1px solid #FED7AA;
   border-radius: 8px;
-  padding: .65rem 1rem;
-  font-size: .88rem;
-  color: var(--mid);
+  padding: .55rem .9rem;
+  font-size: .85rem;
+  color: var(--orange);
   margin-bottom: 1.5rem;
 }
-.post-translate a { color: var(--orange); font-weight: 600; white-space: nowrap; }
-.post-translate a:hover { text-decoration: underline; }
 .post-body p { font-size: 1.05rem; line-height: 1.78; margin-bottom: 1.2rem; color: var(--mid); }
 .post-body p strong { color: var(--ink); }
 .post-body p em { font-style: italic; }

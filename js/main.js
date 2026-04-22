@@ -293,6 +293,70 @@ const MONTHS = {
   en:  ['January','February','March','April','May','June','July','August','September','October','November','December']
 };
 
+/* ── In-page translation via Google ───────────────────────── */
+let _origBody  = null;
+let _origTitle = null;
+
+async function gTranslate(text, tl) {
+  if (!text.trim()) return text;
+  const res = await fetch(
+    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`
+  );
+  const data = await res.json();
+  return data[0].map(c => c[0]).join('');
+}
+
+async function translatePostContent(lang) {
+  const body  = document.querySelector('.post-body');
+  const title = document.querySelector('.post-single h1');
+  const bar   = document.getElementById('postTranslate');
+  const status = document.getElementById('translateStatus');
+  if (!body) return;
+
+  if (!_origBody) {
+    _origBody  = body.innerHTML;
+    _origTitle = title ? title.textContent : null;
+  }
+
+  if (lang === 'es') {
+    body.innerHTML = _origBody;
+    if (title && _origTitle) title.textContent = _origTitle;
+    if (bar) bar.classList.add('hidden');
+    return;
+  }
+
+  const tl  = lang === 'en' ? 'en' : 'ca';
+  const key = `tr|${tl}|${location.pathname}`;
+  const hit = sessionStorage.getItem(key);
+  if (hit) {
+    const c = JSON.parse(hit);
+    body.innerHTML = c.b;
+    if (title && c.t) title.textContent = c.t;
+    if (bar) bar.classList.add('hidden');
+    return;
+  }
+
+  if (bar) {
+    bar.classList.remove('hidden');
+    if (status) status.textContent = lang === 'en' ? 'Translating…' : 'Traduint…';
+  }
+  body.style.opacity = '0.35';
+
+  try {
+    const els  = [...body.querySelectorAll('p,h2,h3,h4,li,blockquote')]
+                   .filter(e => !e.querySelector('img') && e.textContent.trim());
+    const txts = await Promise.all(els.map(e => gTranslate(e.textContent, tl)));
+    els.forEach((e, i) => { e.textContent = txts[i]; });
+    const tt = title ? await gTranslate(title.textContent, tl) : null;
+    if (title && tt) title.textContent = tt;
+    sessionStorage.setItem(key, JSON.stringify({ b: body.innerHTML, t: tt }));
+    if (bar) bar.classList.add('hidden');
+  } catch {
+    if (bar) bar.classList.add('hidden');
+  }
+  body.style.opacity = '1';
+}
+
 function formatPostDate(dateStr, lang) {
   const d = new Date(dateStr + 'T12:00:00');
   const month = MONTHS[lang][d.getMonth()];
@@ -335,19 +399,8 @@ function applyLang(lang) {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
 
-  // Google Translate banner on post pages
-  const translateBar  = document.getElementById('postTranslate');
-  const translateLink = document.getElementById('translateLink');
-  if (translateBar && translateLink) {
-    if (lang === 'es') {
-      translateBar.classList.add('hidden');
-    } else {
-      translateBar.classList.remove('hidden');
-      const tl  = lang === 'en' ? 'en' : 'ca';
-      const url = encodeURIComponent(window.location.href.split('?')[0]);
-      translateLink.href = `https://translate.google.com/translate?sl=es&tl=${tl}&u=${url}`;
-    }
-  }
+  // In-page translation on post pages
+  translatePostContent(lang);
 
   // Format dates rendered by Jekyll
   document.querySelectorAll('[data-date]').forEach(el => {
