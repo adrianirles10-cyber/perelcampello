@@ -714,6 +714,20 @@ main { flex: 1; }
   margin-bottom: 2rem;
 }
 .post-divider { border: none; border-top: 1.5px solid var(--rule); margin: 1.75rem 0; }
+.post-translate {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: 8px;
+  padding: .65rem 1rem;
+  font-size: .88rem;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+}
+.post-translate a { color: var(--orange); font-weight: 600; white-space: nowrap; }
+.post-translate a:hover { text-decoration: underline; }
 .post-body p { font-size: 1.05rem; line-height: 1.78; margin-bottom: 1.2rem; color: var(--mid); }
 .post-body p strong { color: var(--ink); }
 .post-body p em { font-style: italic; }

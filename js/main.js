@@ -92,6 +92,9 @@ const translations = {
 
     logo_sub:     'Partido independiente',
     footer_brand: 'Partido político independiente nacido para mejorar la calidad de vida de quienes viven en El Campello.',
+
+    translate_notice: 'Este artículo está en español.',
+    translate_btn:    'Traducir con Google →',
   },
 
   val: {
@@ -183,6 +186,9 @@ const translations = {
 
     logo_sub:     'Partit independent',
     footer_brand: 'Partit polític independent nascut per millorar la qualitat de vida de qui viu a El Campello.',
+
+    translate_notice: 'Este article està en espanyol.',
+    translate_btn:    'Traduir amb Google →',
   },
 
   en: {
@@ -274,6 +280,9 @@ const translations = {
 
     logo_sub:     'Independent party',
     footer_brand: 'Independent political party born to improve the quality of life of those who live in El Campello.',
+
+    translate_notice: 'This article is in Spanish.',
+    translate_btn:    'Translate with Google →',
   }
 };
 
@@ -325,6 +334,20 @@ function applyLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
+
+  // Google Translate banner on post pages
+  const translateBar  = document.getElementById('postTranslate');
+  const translateLink = document.getElementById('translateLink');
+  if (translateBar && translateLink) {
+    if (lang === 'es') {
+      translateBar.classList.add('hidden');
+    } else {
+      translateBar.classList.remove('hidden');
+      const tl  = lang === 'en' ? 'en' : 'ca';
+      const url = encodeURIComponent(window.location.href.split('?')[0]);
+      translateLink.href = `https://translate.google.com/translate?sl=es&tl=${tl}&u=${url}`;
+    }
+  }
 
   // Format dates rendered by Jekyll
   document.querySelectorAll('[data-date]').forEach(el => {
