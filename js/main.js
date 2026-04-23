@@ -319,7 +319,12 @@ async function translatePageContent(lang) {
     'h1:not([data-i18n])', 'h2:not([data-i18n])',
     'h3:not([data-i18n])', 'h4:not([data-i18n])',
     'p:not([data-i18n])',  'li:not([data-i18n])', 'blockquote',
+    // Blog listado (blog.html / escritos.html)
     '.post-row-title', '.post-row-excerpt', '.post-row-read',
+    // Tarjetas de posts en homepage (index.html)
+    '.post-card-title', '.post-card-excerpt', '.post-card-read',
+    '.post-cat:not([data-i18n])', '.hero-latest-title',
+    // Quiénes somos
     '.candidate-name', '.candidate-role', '.candidate-status'
   ].join(',');
 
